@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  prestodb:
+    image: ahanaio/prestodb-sandbox:0.266
+    volumes:
+      - ./prestodb/etc/catalog/postgresql1.properties:/opt/presto-server/etc/catalog/postgresql1.properties
+      - ./prestodb/etc/catalog/postgresql2.properties:/opt/presto-server/etc/catalog/postgresql2.properties
+      - ./prestodb/etc/access-control.properties:/opt/presto-server/etc/access-control.properties
+      - ./prestodb/etc/password-authenticator.properties:/opt/presto-server/etc/password-authenticator.properties
+      - ./prestodb/etc/password.db:/opt/presto-server/etc/password.db
+    ports:
+      - 8080:8080
+
+  postgres1:
+    image: postgres:14.1 
+    environment:
+      POSTGRES_PASSWORD: example
+    volumes:
+      - ./postgres/init-db-1.sh:/docker-entrypoint-initdb.d/init-db-1.sh
+      - postgres1-data:/var/lib/postgresql/data
+
+  postgres2:
+    image: postgres:14.1 
+    environment:
+      POSTGRES_PASSWORD: example
+    volumes:
+      - ./postgres/init-db-2.sh:/docker-entrypoint-initdb.d/init-db-2.sh
+      - postgres2-data:/var/lib/postgresql/data
+
+volumes:
+  postgres1-data:    
+  postgres2-data:     
